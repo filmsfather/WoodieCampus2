@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { verifyAccessToken, extractTokenFromHeader } from '../utils/jwt.js';
 import { 
   checkPermission,
@@ -6,25 +7,20 @@ import {
   checkAnyPermission,
   logPermissionCheck
 } from '../utils/permissions.js';
-import {
-  UserRole,
+import type {
   Permission,
-  PermissionContext,
+  PermissionContext} from '../types/permissions.js';
+import {
   PermissionResult
 } from '../types/permissions.js';
+// 레거시 미들웨어 - 새로운 코드에서는 standard-auth.ts 사용 권장
 import { SessionManager } from '../utils/session.js';
 import { logger } from '../config/logger.js';
+import type { ApiRequest} from '../types/api.js';
+import { UserRole } from '../types/api.js';
 
-// Extended Request interface to include authenticated user
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-    email: string;
-    role: UserRole;
-    isVerified: boolean;
-  };
-  sessionId?: string;
-}
+// 표준 인증 요청 사용 (레거시 호환성 유지)
+export type AuthenticatedRequest = ApiRequest;
 
 // Middleware to authenticate JWT token
 export const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {

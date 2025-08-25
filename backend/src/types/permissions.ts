@@ -1,10 +1,5 @@
-// User roles enum
-export enum UserRole {
-  STUDENT = 'student',
-  INSTRUCTOR = 'instructor',
-  ADMIN = 'admin',
-  SUPER_ADMIN = 'super_admin'
-}
+// UserRole은 api.ts에서 Prisma 타입으로 통합됨
+export { UserRole } from './api.js';
 
 // Permission categories
 export enum PermissionCategory {
@@ -75,15 +70,15 @@ export interface PermissionInfo {
 
 // Role permission mapping
 export interface RolePermissions {
-  role: UserRole;
+  role: import('./api.js').UserRole;
   permissions: Permission[];
-  inheritFrom?: UserRole; // For hierarchical permissions
+  inheritFrom?: import('./api.js').UserRole; // For hierarchical permissions
 }
 
 // Context-based permission check
 export interface PermissionContext {
   userId: string;
-  userRole: UserRole;
+  userRole: import('./api.js').UserRole;
   resourceId?: string;
   resourceType?: string;
   resourceOwnerId?: string;
@@ -93,6 +88,6 @@ export interface PermissionContext {
 export interface PermissionResult {
   granted: boolean;
   reason?: string;
-  requiredRole?: UserRole;
+  requiredRole?: import('./api.js').UserRole;
   requiredPermissions?: Permission[];
 }

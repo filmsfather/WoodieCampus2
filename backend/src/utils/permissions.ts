@@ -1,12 +1,14 @@
 import {
-  UserRole,
   Permission,
-  PermissionCategory,
+  PermissionCategory
+} from '../types/permissions.js';
+import type {
   PermissionInfo,
   RolePermissions,
   PermissionContext,
   PermissionResult
 } from '../types/permissions.js';
+import { UserRole } from '../types/api.js';
 import { logger } from '../config/logger.js';
 
 // Define all permissions with their categories and descriptions
@@ -357,3 +359,6 @@ export const logPermissionCheck = (
     logger.warn('Permission denied', logData);
   }
 };
+
+// Note: requireRole middleware is available in ../middleware/auth.js
+// Use requireRole (single role) or requireAnyRole (multiple roles) from auth middleware

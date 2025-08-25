@@ -1,0 +1,642 @@
+/* 진도율 대시보드 스타일 */
+
+.progress-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 헤더 */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.refresh-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #3498db;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+.refresh-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* 로딩 및 에러 상태 */
+.progress-dashboard.loading,
+.progress-dashboard.error {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  text-align: center;
+  padding: 40px;
+  background: #ffebee;
+  border-radius: 12px;
+  border: 1px solid #ffcdd2;
+}
+
+.error-message h3 {
+  color: #c62828;
+  margin-bottom: 12px;
+}
+
+.retry-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #e74c3c;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #c0392b;
+}
+
+/* 실시간 요약 카드 */
+.realtime-summary {
+  margin-bottom: 40px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+  font-size: 32px;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.card-label {
+  display: block;
+  font-size: 14px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* 카드별 색상 */
+.summary-card.completion .card-icon {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.summary-card.accuracy .card-icon {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.summary-card.streak .card-icon {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+.summary-card.study-time .card-icon {
+  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+}
+
+/* 상세 통계 */
+.detailed-stats {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.detailed-stats h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #3498db;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* 카테고리별 진도율 */
+.category-progress {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.category-progress h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.category-item {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.category-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.category-stats {
+  font-size: 14px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.category-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.category-progress-bar .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #2196F3);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.category-accuracy {
+  font-size: 12px;
+  color: #6c757d;
+  text-align: right;
+}
+
+/* 레벨 분포 */
+.level-distribution {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.level-distribution h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.level-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.level-name {
+  min-width: 80px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.level-bar {
+  flex: 1;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.level-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.level-count {
+  min-width: 50px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7f8c8d;
+}
+
+/* 최근 진도 차트 */
+.recent-progress {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.recent-progress h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.progress-chart {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+  min-height: 200px;
+  padding: 20px 0;
+}
+
+.day-progress {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day-label {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.day-bar-container {
+  height: 120px;
+  display: flex;
+  align-items: end;
+  margin-bottom: 8px;
+}
+
+.day-bar {
+  width: 24px;
+  min-height: 4px;
+  border-radius: 2px;
+  transition: height 0.3s ease;
+}
+
+.day-stats {
+  text-align: center;
+}
+
+.problems-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.study-time {
+  font-size: 10px;
+  color: #7f8c8d;
+  margin-top: 2px;
+}
+
+.accuracy {
+  font-size: 10px;
+  color: #27ae60;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+.no-data {
+  flex: 1;
+  text-align: center;
+  color: #7f8c8d;
+  font-style: italic;
+  padding: 40px;
+}
+
+/* 실시간 표시기 */
+.realtime-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #e8f5e8;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  background: #4CAF50;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 실시간 업데이트 알림 */
+.progress-update-notification {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+}
+
+.progress-update-notification .notification-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.progress-update-notification .notification-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.progress-update-notification .notification-text {
+  flex: 1;
+}
+
+.progress-update-notification .notification-text strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.progress-update-notification .notification-text p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.smart-insight {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progress-update-notification .notification-time {
+  font-size: 11px;
+  text-align: right;
+  opacity: 0.7;
+  margin-top: 12px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .progress-dashboard {
+    padding: 16px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .dashboard-header h2 {
+    font-size: 24px;
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .summary-card {
+    padding: 20px;
+  }
+
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    margin-right: 16px;
+  }
+
+  .card-value {
+    font-size: 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .progress-chart {
+    gap: 8px;
+    min-height: 150px;
+  }
+
+  .day-bar-container {
+    height: 80px;
+  }
+
+  .day-bar {
+    width: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-dashboard {
+    padding: 12px;
+  }
+
+  .dashboard-header h2 {
+    font-size: 20px;
+  }
+
+  .detailed-stats,
+  .category-progress,
+  .level-distribution,
+  .recent-progress {
+    padding: 16px;
+  }
+
+  .detailed-stats h3,
+  .category-progress h3,
+  .level-distribution h3,
+  .recent-progress h3 {
+    font-size: 18px;
+  }
+
+  .progress-chart {
+    min-height: 120px;
+  }
+
+  .day-bar-container {
+    height: 60px;
+  }
+
+  .day-bar {
+    width: 16px;
+  }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .summary-card:hover,
+  .refresh-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .summary-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  .refresh-btn:active,
+  .retry-btn:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+}

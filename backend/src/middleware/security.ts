@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import rateLimit from 'express-rate-limit';
+import type { Request, Response, NextFunction } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import cors from 'cors';
 import { logger } from '../config/logger.js';
@@ -133,22 +133,22 @@ export const apiRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: Request) => {
-    // Use user ID if available, otherwise fall back to IP
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      try {
-        const token = authHeader.split(' ')[1];
-        // Simple token parsing for rate limiting (not for security)
-        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-        return `user:${payload.userId}`;
-      } catch (error) {
-        // Fall back to IP if token parsing fails
-        return `ip:${req.ip}`;
-      }
-    }
-    return `ip:${req.ip}`;
-  },
+  // keyGenerator: (req: Request) => {
+  //   // Use user ID if available, otherwise fall back to IP
+  //   const authHeader = req.headers.authorization;
+  //   if (authHeader) {
+  //     try {
+  //       const token = authHeader.split(' ')[1];
+  //       // Simple token parsing for rate limiting (not for security)
+  //       const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+  //       return `user:${payload.userId}`;
+  //     } catch (error) {
+  //       // Fall back to IP if token parsing fails
+  //       return `ip:${req.ip}`;
+  //     }
+  //   }
+  //   return `ip:${req.ip}`;
+  // },
   handler: (req: Request, res: Response) => {
     logger.warn(`API rate limit exceeded for ${req.ip} on ${req.path}`);
     res.status(429).json({

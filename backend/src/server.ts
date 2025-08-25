@@ -20,6 +20,7 @@ import { checkDatabaseConnection, closeDatabaseConnection } from './config/datab
 import { connectRedis, checkRedisConnection, closeRedisConnection } from './config/redis.js';
 import { runMigrations } from './database/migrations.js';
 import { initializeSocketIO, socketUtils } from './config/socket.js';
+import ReviewScheduler from './services/reviewScheduler.js';
 
 dotenv.config();
 
@@ -81,10 +82,31 @@ const startServer = async () => {
     const io = initializeSocketIO(httpServer);
     logger.info('Socket.io server initialized');
     
+    // Initialize and start Review Scheduler
+    let schedulerStarted = false;
+    if (redisConnected && dbConnected) {
+      try {
+        const scheduler = ReviewScheduler.getInstance({
+          enabled: process.env.NODE_ENV !== 'test', // 테스트 환경에서는 비활성화
+          timezone: 'Asia/Seoul',
+          batchSize: 50,
+          maxConcurrentJobs: 3,
+          retryAttempts: 2
+        });
+        scheduler.start();
+        schedulerStarted = true;
+        logger.info('Review scheduler started successfully');
+      } catch (error) {
+        logger.error('Failed to start review scheduler:', error);
+      }
+    } else {
+      logger.warn('Review scheduler disabled - requires both database and Redis connections');
+    }
+    
     // Start HTTP server
     httpServer.listen(PORT, () => {
       logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-      logger.info(`Services status - Database: ${dbConnected ? 'connected' : 'disconnected'}, Redis: ${redisConnected ? 'connected' : 'disconnected'}, WebSocket: active`);
+      logger.info(`Services status - Database: ${dbConnected ? 'connected' : 'disconnected'}, Redis: ${redisConnected ? 'connected' : 'disconnected'}, WebSocket: active, Scheduler: ${schedulerStarted ? 'active' : 'inactive'}`);
     });
     
   } catch (error) {
@@ -98,6 +120,16 @@ const shutdown = async () => {
   logger.info('Shutting down server...');
   
   try {
+    // Stop review scheduler
+    try {
+      const scheduler = ReviewScheduler.getInstance();
+      scheduler.stop();
+      logger.info('Review scheduler stopped');
+    } catch (error) {
+      logger.error('Error stopping scheduler:', error);
+    }
+    
+    // Close database and Redis connections
     await closeDatabaseConnection();
     await closeRedisConnection();
     logger.info('Server shutdown complete');

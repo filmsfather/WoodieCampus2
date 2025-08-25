@@ -1,5 +1,6 @@
-import { Server as HTTPServer } from 'http';
-import { Server as SocketIOServer, Socket } from 'socket.io';
+import type { Server as HTTPServer } from 'http';
+import type { Socket } from 'socket.io';
+import { Server as SocketIOServer } from 'socket.io';
 import { logger } from './logger.js';
 import { cacheUtils } from './redis.js';
 
@@ -137,6 +138,179 @@ export const initializeSocketIO = (httpServer: HTTPServer): SocketIOServer => {
       logger.info(`Progress update: User ${userId}, Course ${courseId}, Progress ${progress}%`);
     });
 
+    // Real-time learning progress events
+    socket.on('start-learning-session', async (data) => {
+      const userId = (socket as AuthenticatedSocket).userId;
+      if (!userId) return;
+
+      const { sessionId, problemSetId, difficulty } = data;
+      
+      // Join session room
+      socket.join(`learning-session:${sessionId}`);
+      
+      const sessionData = {
+        sessionId,
+        userId,
+        problemSetId,
+        difficulty,
+        startTime: new Date().toISOString(),
+        status: 'active'
+      };
+
+      // Store session info in cache for tracking
+      await cacheUtils.set(`session:${sessionId}`, JSON.stringify(sessionData), 7200); // 2 hours
+      
+      // Notify user about session start
+      socket.emit('session-started', sessionData);
+      
+      logger.info(`Learning session started: ${sessionId} by user ${userId}`);
+    });
+
+    // Update learning session progress
+    socket.on('update-learning-progress', async (data) => {
+      const userId = (socket as AuthenticatedSocket).userId;
+      if (!userId) return;
+
+      const { 
+        sessionId, 
+        problemId, 
+        isCorrect, 
+        responseTime, 
+        difficulty,
+        currentIndex,
+        totalProblems 
+      } = data;
+
+      const progressUpdate = {
+        sessionId,
+        userId,
+        problemId,
+        isCorrect,
+        responseTime,
+        difficulty,
+        progress: Math.round((currentIndex / totalProblems) * 100),
+        timestamp: new Date().toISOString()
+      };
+
+      // Emit to user's room for real-time UI updates
+      socket.to(`user:${userId}`).emit('progress-updated', progressUpdate);
+      
+      // Emit to learning session room for collaborative features
+      socket.to(`learning-session:${sessionId}`).emit('session-progress', progressUpdate);
+      
+      // Emit to instructors for monitoring
+      socket.to('role:instructor').emit('student-learning-update', {
+        studentId: userId,
+        ...progressUpdate
+      });
+
+      logger.info(`Learning progress updated: User ${userId}, Session ${sessionId}, Progress ${progressUpdate.progress}%`);
+    });
+
+    // Complete learning session
+    socket.on('complete-learning-session', async (data) => {
+      const userId = (socket as AuthenticatedSocket).userId;
+      if (!userId) return;
+
+      const { 
+        sessionId, 
+        totalProblems, 
+        correctAnswers, 
+        totalTime,
+        averageResponseTime 
+      } = data;
+
+      // Leave session room
+      socket.leave(`learning-session:${sessionId}`);
+      
+      const completionData = {
+        sessionId,
+        userId,
+        completedAt: new Date().toISOString(),
+        stats: {
+          totalProblems,
+          correctAnswers,
+          accuracy: totalProblems > 0 ? (correctAnswers / totalProblems) * 100 : 0,
+          totalTime,
+          averageResponseTime
+        }
+      };
+
+      // Remove session from cache
+      await cacheUtils.del(`session:${sessionId}`);
+      
+      // Notify completion
+      socket.emit('session-completed', completionData);
+      
+      // Notify instructors
+      socket.to('role:instructor').emit('student-session-completed', {
+        studentId: userId,
+        ...completionData
+      });
+
+      logger.info(`Learning session completed: ${sessionId} by user ${userId}`);
+    });
+
+    // Subscribe to real-time progress updates
+    socket.on('subscribe-progress', (data) => {
+      const userId = (socket as AuthenticatedSocket).userId;
+      if (!userId) return;
+
+      const { subscriptionType = 'own' } = data; // 'own', 'class', 'all'
+      
+      // Join appropriate rooms based on subscription type
+      switch (subscriptionType) {
+        case 'own':
+          socket.join(`progress:${userId}`);
+          break;
+        case 'class':
+          // Join class-wide progress updates (for instructors)
+          if ((socket as AuthenticatedSocket).userRole === 'instructor') {
+            socket.join('progress:class');
+          }
+          break;
+        case 'all':
+          // Admin-level progress monitoring
+          if ((socket as AuthenticatedSocket).userRole === 'admin') {
+            socket.join('progress:all');
+          }
+          break;
+      }
+
+      socket.emit('progress-subscription-confirmed', { 
+        subscriptionType,
+        userId,
+        timestamp: new Date().toISOString()
+      });
+      
+      logger.info(`User ${userId} subscribed to ${subscriptionType} progress updates`);
+    });
+
+    // Unsubscribe from progress updates
+    socket.on('unsubscribe-progress', (data) => {
+      const userId = (socket as AuthenticatedSocket).userId;
+      if (!userId) return;
+
+      const { subscriptionType = 'own' } = data;
+      
+      switch (subscriptionType) {
+        case 'own':
+          socket.leave(`progress:${userId}`);
+          break;
+        case 'class':
+          socket.leave('progress:class');
+          break;
+        case 'all':
+          socket.leave('progress:all');
+          break;
+      }
+
+      socket.emit('progress-unsubscribed', { 
+        subscriptionType,
+        timestamp: new Date().toISOString()
+      });
+    });
+
     // Live session events
     socket.on('join-live-session', (sessionId: string) => {
       socket.join(`session:${sessionId}`);
@@ -221,6 +395,64 @@ export const socketUtils = {
     if (io) {
       const sockets = await io.fetchSockets();
       return sockets.length;
+    }
+    return 0;
+  },
+
+  // Progress-specific utility functions
+  emitProgressUpdate: (userId: string, progressData: any) => {
+    if (io) {
+      io.to(`user:${userId}`).emit('progress-updated', progressData);
+      io.to(`progress:${userId}`).emit('progress-updated', progressData);
+    }
+  },
+
+  emitSessionProgress: (sessionId: string, userId: string, progressData: any) => {
+    if (io) {
+      io.to(`learning-session:${sessionId}`).emit('session-progress', progressData);
+      io.to(`user:${userId}`).emit('session-progress', progressData);
+    }
+  },
+
+  emitMasteryUpdate: (userId: string, masteryData: any) => {
+    if (io) {
+      io.to(`user:${userId}`).emit('mastery-updated', masteryData);
+    }
+  },
+
+  emitLiveStats: (userId: string, statsData: any) => {
+    if (io) {
+      io.to(`user:${userId}`).emit('live-stats', statsData);
+    }
+  },
+
+  // Instructor monitoring
+  emitToInstructors: (event: string, data: any) => {
+    if (io) {
+      io.to('role:instructor').emit(event, data);
+    }
+  },
+
+  // Class-wide progress broadcasting
+  emitClassProgress: (classId: string, progressData: any) => {
+    if (io) {
+      io.to(`class:${classId}`).emit('class-progress', progressData);
+    }
+  },
+
+  // Get active learning sessions count
+  getActiveSessions: async (): Promise<number> => {
+    if (io) {
+      const rooms = io.sockets.adapter.rooms;
+      let sessionCount = 0;
+      
+      for (const [roomName] of rooms) {
+        if (roomName.startsWith('learning-session:')) {
+          sessionCount++;
+        }
+      }
+      
+      return sessionCount;
     }
     return 0;
   },

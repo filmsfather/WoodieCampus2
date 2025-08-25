@@ -1,24 +1,27 @@
-import { Router, Request, Response } from 'express';
+import type { Response } from 'express';
+import { Router, Request } from 'express';
 import { pool } from '../config/database.js';
 import { logger } from '../config/logger.js';
+import type {
+  AuthenticatedRequest
+} from '../middleware/auth.js';
 import {
   authenticateToken,
   requireRole,
   requirePermission,
   requireAnyRole,
-  requireOwnershipOrAdmin,
-  AuthenticatedRequest
+  requireOwnershipOrAdmin
 } from '../middleware/auth.js';
 import {
   getRolePermissions,
   getRolePermissionsByCategory,
   checkPermission
 } from '../utils/permissions.js';
-import {
-  UserRole,
-  Permission,
+import type {
   PermissionContext
 } from '../types/permissions.js';
+import { UserRole } from '../types/api.js';
+import { Permission } from '../types/permissions.js';
 
 const router = Router();
 

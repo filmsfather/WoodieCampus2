@@ -1,5 +1,5 @@
 # Multi-stage build for Node.js backend
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 # Set working directory
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Install curl for health checks
 RUN apk add --no-cache curl
@@ -35,14 +35,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
-
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
 # Copy Prisma schema for migrations
 COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
+
+# Copy node_modules from builder stage (includes all dependencies)
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 
 # Copy environment files
 COPY --chown=nodejs:nodejs .env.example ./

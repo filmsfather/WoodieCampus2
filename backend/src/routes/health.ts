@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 import { pool } from '../config/database.js';
 import { cacheUtils } from '../config/redis.js';
 import { logger } from '../config/logger.js';

@@ -1,0 +1,378 @@
+/* 복습 세션 컴포넌트 스타일 */
+
+.review-session {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+/* 세션 헤더 */
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  padding: 0 20px;
+}
+
+.session-info {
+  flex: 1;
+}
+
+.session-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.session-subtitle {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.session-controls {
+  flex-shrink: 0;
+}
+
+.control-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.control-btn.pause {
+  background: #f39c12;
+  color: white;
+}
+
+.control-btn.pause:hover {
+  background: #e67e22;
+  transform: translateY(-1px);
+}
+
+/* 전체 진도율 */
+.session-progress {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat .value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.stat .label {
+  display: block;
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 응답 히스토리 */
+.response-history {
+  max-width: 600px;
+  margin: 40px auto 0 auto;
+  padding: 0 20px;
+}
+
+.response-history h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.history-items {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-item.again {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.history-item.hard {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.history-item.good {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.history-item.easy {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.history-item .feedback {
+  font-size: 16px;
+}
+
+.history-item .time {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* 세션 완료 화면 */
+.review-session-completion {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.completion-card {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.completion-header h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 0 0 16px 0;
+}
+
+.completion-header p {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+.completion-stats {
+  margin-bottom: 32px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item .stat-number {
+  display: block;
+  font-size: 36px;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.stat-item .stat-label {
+  display: block;
+  font-size: 14px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.time-summary {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.time-summary p {
+  margin: 0;
+  font-size: 14px;
+  color: #495057;
+  font-weight: 600;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.action-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-btn.primary {
+  background: #2196F3;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #1976D2;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+}
+
+.action-btn.secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.action-btn.secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .review-session {
+    padding: 16px;
+  }
+  
+  .session-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+    padding: 0 16px;
+  }
+  
+  .session-title {
+    font-size: 24px;
+  }
+  
+  .session-subtitle {
+    font-size: 14px;
+  }
+  
+  .session-progress {
+    padding: 20px;
+  }
+  
+  .progress-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .stat .value {
+    font-size: 20px;
+  }
+  
+  .completion-card {
+    padding: 32px 24px;
+  }
+  
+  .completion-header h2 {
+    font-size: 28px;
+  }
+  
+  .completion-actions {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    padding: 14px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .session-progress {
+    padding: 16px;
+  }
+  
+  .progress-stats {
+    gap: 12px;
+  }
+  
+  .stat .value {
+    font-size: 18px;
+  }
+  
+  .stat .label {
+    font-size: 11px;
+  }
+  
+  .completion-card {
+    padding: 24px 20px;
+  }
+  
+  .completion-header h2 {
+    font-size: 24px;
+  }
+  
+  .stat-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .stat-item .stat-number {
+    font-size: 28px;
+  }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .control-btn:hover,
+  .action-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .control-btn:active,
+  .action-btn:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+}
