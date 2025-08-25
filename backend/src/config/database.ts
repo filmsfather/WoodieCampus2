@@ -8,7 +8,7 @@ const dbConfig: PoolConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME || 'woodiecampus',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
   // Connection pool settings
   max: parseInt(process.env.DB_POOL_MAX || '20'),
   min: parseInt(process.env.DB_POOL_MIN || '2'),
