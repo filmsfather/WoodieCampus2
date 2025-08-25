@@ -1,0 +1,460 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 사용자 역할 Enum
+enum UserRole {
+  STUDENT      // 학생
+  INSTRUCTOR   // 강사
+  ADMIN        // 관리자
+  SUPER_ADMIN  // 최고 관리자
+}
+
+// 공지사항 카테고리 Enum
+enum NoticeCategory {
+  GENERAL      // 일반
+  ACADEMIC     // 학습
+  EVENT        // 행사
+  SYSTEM       // 시스템
+  URGENT       // 긴급
+}
+
+// 사용자 테이블
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  role         UserRole @default(STUDENT)
+  isActive     Boolean  @default(true) @map("is_active")
+  isVerified   Boolean  @default(false) @map("is_verified")
+  profileImage String?  @map("profile_image")
+  phoneNumber  String?  @map("phone_number")
+  birthDate    DateTime? @map("birth_date") @db.Date
+  address      String?
+  bio          String?
+  
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  createdProblemSets    ProblemSet[] @relation("CreatedProblemSets")
+  createdProblems       Problem[]    @relation("CreatedProblems")
+  createdNotices        Notice[]     @relation("CreatedNotices")
+  forumPosts            ForumPost[]
+  comments              Comment[]
+  messages              Message[]    @relation("SentMessages")
+  receivedMessages      Message[]    @relation("ReceivedMessages")
+  attendanceRecords     AttendanceRecord[]
+  learningProgress      LearningProgress[]
+  achievements          Achievement[]
+  notifications         Notification[]
+  schedules             Schedule[]
+  
+  @@index([email])
+  @@index([role])
+  @@index([createdAt])
+  @@map("users")
+}
+
+// 문제집 테이블
+model ProblemSet {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String?
+  difficulty  Int      @default(1) // 1-10 scale
+  isPublic    Boolean  @default(true) @map("is_public")
+  isActive    Boolean  @default(true) @map("is_active")
+  order       Int      @default(0)
+  tags        String[] @default([])
+  
+  createdById String   @map("created_by_id")
+  createdBy   User     @relation("CreatedProblemSets", fields: [createdById], references: [id])
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  problems    Problem[]
+  learningProgress LearningProgress[]
+  
+  @@index([createdById])
+  @@index([category])
+  @@index([isPublic])
+  @@index([createdAt])
+  @@map("problem_sets")
+}
+
+// 문제 테이블
+model Problem {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  content       String   // 문제 내용 (HTML/Markdown)
+  solution      String?  // 해답/해설
+  difficulty    Int      @default(1) // 1-10 scale
+  estimatedTime Int?     @map("estimated_time") // 예상 소요 시간 (분)
+  isPublic      Boolean  @default(true) @map("is_public")
+  isActive      Boolean  @default(true) @map("is_active")
+  order         Int      @default(0)
+  tags          String[] @default([])
+  attachments   String[] @default([]) // 첨부파일 URLs
+  
+  problemSetId  String   @map("problem_set_id")
+  problemSet    ProblemSet @relation(fields: [problemSetId], references: [id], onDelete: Cascade)
+  
+  createdById   String   @map("created_by_id")
+  createdBy     User     @relation("CreatedProblems", fields: [createdById], references: [id])
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  learningProgress LearningProgress[]
+  
+  @@index([problemSetId])
+  @@index([createdById])
+  @@index([difficulty])
+  @@index([isPublic])
+  @@index([createdAt])
+  @@map("problems")
+}
+
+// 공지사항 테이블
+model Notice {
+  id          String         @id @default(cuid())
+  title       String
+  content     String
+  category    NoticeCategory @default(GENERAL)
+  isPinned    Boolean        @default(false) @map("is_pinned")
+  isPublic    Boolean        @default(true) @map("is_public")
+  isActive    Boolean        @default(true) @map("is_active")
+  viewCount   Int            @default(0) @map("view_count")
+  attachments String[]       @default([])
+  
+  createdById String         @map("created_by_id")
+  createdBy   User           @relation("CreatedNotices", fields: [createdById], references: [id])
+  
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  publishedAt DateTime?      @map("published_at")
+  
+  @@index([createdById])
+  @@index([category])
+  @@index([isPinned])
+  @@index([isPublic])
+  @@index([createdAt])
+  @@map("notices")
+}
+
+// 포럼 카테고리 Enum
+enum ForumCategory {
+  GENERAL      // 자유게시판
+  QNA          // 질문답변
+  STUDY        // 학습
+  PROJECT      // 프로젝트
+  ANNOUNCEMENT // 공지
+  HELP         // 도움요청
+}
+
+// 메시지 타입 Enum
+enum MessageType {
+  PRIVATE      // 개인 메시지
+  GROUP        // 그룹 메시지
+  SYSTEM       // 시스템 메시지
+}
+
+// 알림 타입 Enum
+enum NotificationType {
+  MESSAGE      // 새 메시지
+  FORUM_REPLY  // 게시글 답글
+  COMMENT_REPLY // 댓글 답글
+  NOTICE       // 새 공지사항
+  SYSTEM       // 시스템 알림
+  ACHIEVEMENT  // 성취 달성
+}
+
+// 포럼 게시글 테이블
+model ForumPost {
+  id          String        @id @default(cuid())
+  title       String
+  content     String
+  category    ForumCategory @default(GENERAL)
+  isPinned    Boolean       @default(false) @map("is_pinned")
+  isLocked    Boolean       @default(false) @map("is_locked")
+  viewCount   Int           @default(0) @map("view_count")
+  likeCount   Int           @default(0) @map("like_count")
+  tags        String[]      @default([])
+  attachments String[]      @default([])
+  
+  authorId    String        @map("author_id")
+  author      User          @relation(fields: [authorId], references: [id])
+  
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  
+  // Relations
+  comments    Comment[]
+  
+  @@index([authorId])
+  @@index([category])
+  @@index([isPinned])
+  @@index([createdAt])
+  @@map("forum_posts")
+}
+
+// 댓글 테이블 (계층형 구조 지원)
+model Comment {
+  id          String    @id @default(cuid())
+  content     String
+  likeCount   Int       @default(0) @map("like_count")
+  isEdited    Boolean   @default(false) @map("is_edited")
+  
+  authorId    String    @map("author_id")
+  author      User      @relation(fields: [authorId], references: [id])
+  
+  forumPostId String    @map("forum_post_id")
+  forumPost   ForumPost @relation(fields: [forumPostId], references: [id], onDelete: Cascade)
+  
+  // 대댓글을 위한 자기 참조
+  parentId    String?   @map("parent_id")
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@index([authorId])
+  @@index([forumPostId])
+  @@index([parentId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+// 메시지 테이블
+model Message {
+  id          String      @id @default(cuid())
+  content     String
+  messageType MessageType @default(PRIVATE) @map("message_type")
+  isRead      Boolean     @default(false) @map("is_read")
+  readAt      DateTime?   @map("read_at")
+  attachments String[]    @default([])
+  
+  senderId    String      @map("sender_id")
+  sender      User        @relation("SentMessages", fields: [senderId], references: [id])
+  
+  receiverId  String      @map("receiver_id")
+  receiver    User        @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  
+  // 그룹 메시지를 위한 필드 (향후 확장 가능)
+  groupId     String?     @map("group_id")
+  
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// 알림 테이블
+model Notification {
+  id           String           @id @default(cuid())
+  title        String
+  content      String
+  type         NotificationType
+  isRead       Boolean          @default(false) @map("is_read")
+  readAt       DateTime?        @map("read_at")
+  
+  // 관련 리소스 링크
+  resourceId   String?          @map("resource_id")
+  resourceType String?          @map("resource_type") // 'forum_post', 'notice', 'message' etc.
+  
+  userId       String           @map("user_id")
+  user         User             @relation(fields: [userId], references: [id])
+  
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  
+  @@index([userId])
+  @@index([type])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// 출석 상태 Enum
+enum AttendanceStatus {
+  PRESENT      // 출석
+  ABSENT       // 결석
+  LATE         // 지각
+  EARLY_LEAVE  // 조퇴
+}
+
+// 학습 상태 Enum
+enum LearningStatus {
+  NOT_STARTED  // 미시작
+  IN_PROGRESS  // 진행중
+  COMPLETED    // 완료
+  PAUSED       // 일시정지
+  FAILED       // 실패
+}
+
+// 성취 타입 Enum
+enum AchievementType {
+  LEARNING     // 학습 관련
+  ATTENDANCE   // 출석 관련
+  PARTICIPATION // 참여 관련
+  SPECIAL      // 특별 성취
+}
+
+// 출석 기록 테이블
+model AttendanceRecord {
+  id          String           @id @default(cuid())
+  date        DateTime         @db.Date
+  checkInTime DateTime?        @map("check_in_time")
+  checkOutTime DateTime?       @map("check_out_time")
+  status      AttendanceStatus @default(PRESENT)
+  
+  // GPS 좌표 (선택적)
+  latitude    Float?
+  longitude   Float?
+  address     String?          // 체크인 위치 주소
+  
+  // 근무 시간 계산 관련
+  workDuration Int?            @map("work_duration") // 근무 시간 (분)
+  breakDuration Int?           @map("break_duration") // 휴게 시간 (분)
+  
+  // 비고 및 메모
+  notes       String?
+  
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  
+  // 하루에 한 번만 기록
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@index([status])
+  @@index([createdAt])
+  @@map("attendance_records")
+}
+
+// 학습 진도 테이블
+model LearningProgress {
+  id            String         @id @default(cuid())
+  status        LearningStatus @default(NOT_STARTED)
+  startedAt     DateTime?      @map("started_at")
+  completedAt   DateTime?      @map("completed_at")
+  lastAccessedAt DateTime?     @map("last_accessed_at")
+  
+  // 진도율 및 시간 추적
+  progressPercentage Float    @default(0.0) @map("progress_percentage") // 0.0 - 100.0
+  timeSpent         Int       @default(0) @map("time_spent") // 소요 시간 (분)
+  attemptsCount     Int       @default(0) @map("attempts_count") // 시도 횟수
+  
+  // 점수 및 평가
+  score         Float?        // 점수
+  maxScore      Float?        @map("max_score") // 만점
+  
+  // 학습 메모 및 노트
+  notes         String?
+  
+  // Relations
+  userId        String        @map("user_id")
+  user          User          @relation(fields: [userId], references: [id])
+  
+  problemSetId  String?       @map("problem_set_id")
+  problemSet    ProblemSet?   @relation(fields: [problemSetId], references: [id])
+  
+  problemId     String?       @map("problem_id")
+  problem       Problem?      @relation(fields: [problemId], references: [id])
+  
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  
+  @@index([userId])
+  @@index([status])
+  @@index([problemSetId])
+  @@index([problemId])
+  @@index([createdAt])
+  @@map("learning_progress")
+}
+
+// 성취/배지 시스템 테이블
+model Achievement {
+  id          String          @id @default(cuid())
+  title       String
+  description String
+  type        AchievementType
+  iconUrl     String?         @map("icon_url")
+  badgeUrl    String?         @map("badge_url")
+  points      Int             @default(0) // 획득 포인트
+  
+  // 달성 조건
+  criteria    Json?           // 달성 조건 (JSON 형태로 저장)
+  
+  // 달성 정보
+  unlockedAt  DateTime        @map("unlocked_at")
+  isPublic    Boolean         @default(true) @map("is_public")
+  
+  userId      String          @map("user_id")
+  user        User            @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  
+  @@index([userId])
+  @@index([type])
+  @@index([unlockedAt])
+  @@map("achievements")
+}
+
+// 일정/스케줄 테이블
+model Schedule {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startTime   DateTime  @map("start_time")
+  endTime     DateTime  @map("end_time")
+  isAllDay    Boolean   @default(false) @map("is_all_day")
+  location    String?
+  
+  // 반복 일정 설정
+  isRecurring Boolean   @default(false) @map("is_recurring")
+  recurrenceRule String? @map("recurrence_rule") // RRULE format
+  
+  // 참여자
+  participantIds String[] @default([]) @map("participant_ids")
+  
+  // 알림 설정
+  reminderMinutes Int?    @map("reminder_minutes")
+  
+  createdById String    @map("created_by_id")
+  createdBy   User      @relation(fields: [createdById], references: [id])
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  @@index([createdById])
+  @@index([startTime])
+  @@index([endTime])
+  @@index([isRecurring])
+  @@map("schedules")
+}

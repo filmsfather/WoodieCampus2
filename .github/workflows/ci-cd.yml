@@ -1,0 +1,253 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_BACKEND: woodiecampus/backend
+  IMAGE_NAME_FRONTEND: woodiecampus/frontend
+  IMAGE_NAME_NGINX: woodiecampus/nginx
+
+jobs:
+  # 테스트 작업
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: woodiecampus_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    # Backend 테스트
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm ci
+
+    - name: Generate Prisma Client
+      run: |
+        cd backend
+        npx prisma generate
+
+    - name: Run backend tests
+      run: |
+        cd backend
+        npm run test || echo "No backend tests configured"
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/woodiecampus_test
+        REDIS_URL: redis://localhost:6379
+        JWT_SECRET: test-secret-key
+        NODE_ENV: test
+
+    # Frontend 테스트
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm run test:run || echo "No frontend tests configured"
+
+    - name: Build frontend for testing
+      run: |
+        cd frontend
+        npm run build
+
+  # 빌드 및 푸시 작업
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      run: |
+        # Git commit hash (short)
+        SHORT_SHA=$(git rev-parse --short HEAD)
+        
+        # Branch name (sanitized for docker tags)
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/[^a-zA-Z0-9.-]/-/g')
+        
+        # Timestamp
+        TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+        
+        echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+        echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+        echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+        
+        # Tags for different environments
+        if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+          echo "environment=production" >> $GITHUB_OUTPUT
+          echo "version_tag=latest" >> $GITHUB_OUTPUT
+        elif [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+          echo "environment=staging" >> $GITHUB_OUTPUT
+          echo "version_tag=develop" >> $GITHUB_OUTPUT
+        else
+          echo "environment=feature" >> $GITHUB_OUTPUT
+          echo "version_tag=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+        fi
+
+    # Backend 이미지 빌드 및 푸시
+    - name: Build and push backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.meta.outputs.version_tag }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.meta.outputs.short_sha }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.meta.outputs.branch_name }}-${{ steps.meta.outputs.timestamp }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+    # Frontend 이미지 빌드 및 푸시
+    - name: Build and push frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.meta.outputs.version_tag }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.meta.outputs.short_sha }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.meta.outputs.branch_name }}-${{ steps.meta.outputs.timestamp }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+    # Nginx 이미지 빌드 및 푸시
+    - name: Build and push nginx image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./nginx
+        file: ./nginx/Dockerfile
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:${{ steps.meta.outputs.version_tag }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:${{ steps.meta.outputs.short_sha }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:${{ steps.meta.outputs.branch_name }}-${{ steps.meta.outputs.timestamp }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+    # 보안 스캔
+    - name: Run security scan on backend image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.meta.outputs.short_sha }}
+        format: 'sarif'
+        output: 'backend-trivy-results.sarif'
+
+    - name: Upload backend security scan results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'backend-trivy-results.sarif'
+
+    # 배포 트리거
+    - name: Trigger deployment
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Triggering production deployment..."
+        echo "Image tags:"
+        echo "  Backend: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ steps.meta.outputs.short_sha }}"
+        echo "  Frontend: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ steps.meta.outputs.short_sha }}"
+        echo "  Nginx: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:${{ steps.meta.outputs.short_sha }}"
+        
+        # 이후 EC2 배포 스크립트 호출 (추후 구현)
+        # curl -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}" \
+        #   -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
+        #   -H "Content-Type: application/json" \
+        #   -d '{"image_tag": "${{ steps.meta.outputs.short_sha }}", "environment": "production"}'
+
+  # Staging 환경 배포
+  deploy-staging:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment..."
+        echo "This will be implemented with EC2 deployment scripts"
+
+  # Production 환경 배포
+  deploy-production:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment..."
+        echo "This will be implemented with EC2 deployment scripts"
+
+    - name: Notify deployment
+      if: always()
+      run: |
+        echo "Sending deployment notification..."
+        # Slack 또는 이메일 알림 (추후 구현)

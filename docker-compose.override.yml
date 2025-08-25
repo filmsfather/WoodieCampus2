@@ -1,0 +1,17 @@
+# Development override for docker-compose
+# This file is automatically loaded by docker-compose
+version: '3.8'
+
+services:
+  backend:
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules

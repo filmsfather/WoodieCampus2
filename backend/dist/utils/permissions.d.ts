@@ -1,0 +1,11 @@
+import { UserRole, Permission, PermissionCategory, PermissionInfo, RolePermissions, PermissionContext, PermissionResult } from '../types/permissions.js';
+export declare const PERMISSION_DEFINITIONS: PermissionInfo[];
+export declare const ROLE_PERMISSIONS: RolePermissions[];
+export declare const getRolePermissions: (role: UserRole) => Permission[];
+export declare const roleHasPermission: (role: UserRole, permission: Permission) => boolean;
+export declare const checkPermission: (context: PermissionContext, requiredPermission: Permission) => PermissionResult;
+export declare const checkPermissions: (context: PermissionContext, requiredPermissions: Permission[]) => PermissionResult;
+export declare const checkAnyPermission: (context: PermissionContext, permissions: Permission[]) => PermissionResult;
+export declare const getRolePermissionsByCategory: (role: UserRole) => Record<PermissionCategory, PermissionInfo[]>;
+export declare const isRoleHigherThan: (role1: UserRole, role2: UserRole) => boolean;
+export declare const logPermissionCheck: (context: PermissionContext, permission: Permission, result: PermissionResult) => void;

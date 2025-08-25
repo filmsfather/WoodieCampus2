@@ -1,0 +1,733 @@
+# Overview
+
+WOODIECAMPUS는 에빙하우스 망각곡선 이론을 기반으로 한 지능형 학습 관리 플랫폼입니다. 중고등학생들이 학습한 내용을 과학적으로 복습하여 장기 기억으로 전환하도록 돕고, 교사들이 학생들의 학습 진도를 효율적으로 관리할 수 있도록 지원합니다. 나아가 학원 운영에 필요한 종합적인 관리 기능을 제공하여 교육 기관의 디지털 전환을 완성합니다.
+
+핵심 문제는 학생들이 배운 내용의 90%를 일주일 내에 잊어버린다는 점, 교사들이 개별 학생의 학습 상태를 추적하기 어렵다는 점, 그리고 학원 운영 관리가 파편화되어 있다는 점입니다. WOODIECAMPUS는 자동화된 복습 스케줄링, 실시간 모니터링, 그리고 통합 운영 관리 시스템을 통해 이러한 문제를 해결합니다.
+
+주요 가치는 개인별 맞춤 복습 주기 제공, 게임화를 통한 학습 동기 부여, 데이터 기반의 학습 인사이트 제공, 그리고 학원 운영 효율성 극대화입니다.
+
+# Core Features
+
+## 1. 문제 및 문제집 관리 시스템
+**기능**: 교사가 개별 문제를 생성하고, 이를 문제집으로 구성하여 학생에게 배포하는 계층적 콘텐츠 관리
+
+**중요성**: 체계적인 학습 콘텐츠 구성과 재사용 가능한 문제 자산 구축으로 교사의 업무 효율성 극대화
+
+**작동 방식**:
+- 문제 뱅크: 교사가 생성한 모든 문제를 저장하고 태그/카테고리로 관리
+- 문제집 생성: 문제 뱅크에서 문제를 선택하여 순서와 가중치를 정해 문제집 구성
+- 문제집 템플릿: 자주 사용하는 문제집을 템플릿으로 저장하여 재사용
+- 버전 관리: 문제집 수정 시 버전 히스토리 유지
+- 공유 기능: 교사 간 문제집 공유 및 복제
+
+## 2. 망각곡선 기반 스마트 복습 시스템
+**기능**: 문제집 내 각 문제별로 개인화된 복습 스케줄 자동 생성
+
+**중요성**: 과학적으로 입증된 간격 반복 학습법을 통해 장기 기억 정착률을 80% 이상으로 향상
+
+**작동 방식**:
+- 문제집 배포 시 각 문제별 독립적인 복습 주기 설정
+- 기본 주기: 20분, 1시간, 8시간, 1일, 3일, 7일, 14일, 30일
+- 문제별 진도 추적: 같은 문제집 내에서도 문제마다 다른 복습 단계
+- 문제집 완료율: 모든 문제가 최종 복습 단계 도달 시 문제집 완료
+
+## 3. 적응형 난이도 조정 시스템
+**기능**: 학생의 정답률과 체감 난이도를 결합한 개인화된 학습 경로 생성
+
+**중요성**: 개인별 학습 속도와 이해도에 맞춘 최적화로 학습 효율 극대화
+
+**작동 방식**:
+- "다시" 선택 시: 해당 문제만 즉시 재학습 + 5분 후 재복습
+- "어려움" 선택 시: 해당 문제의 복습 주기를 이전 단계로 롤백
+- "알맞음" 선택 시: 기본 주기 유지
+- "쉬움" 선택 시: 다음 복습 단계 스킵
+
+## 4. 문제집 배포 및 할당 시스템
+**기능**: 문제집을 학생 개인, 그룹, 또는 전체 반에 배포하고 기한 설정
+
+**중요성**: 효율적인 과제 관리와 차별화된 학습 지원
+
+**작동 방식**:
+- 배포 대상 선택: 개별 학생, 커스텀 그룹, 반 전체
+- 배포 일정: 즉시 배포 또는 예약 배포
+- 기한 설정: 문제집별 시작일과 마감일 설정
+- 조건부 배포: 이전 문제집 완료율에 따른 자동 배포
+
+## 5. 공지사항 관리 시스템
+**기능**: 계층적 공지사항 배포 및 확인 추적
+
+**중요성**: 중요 정보의 확실한 전달과 커뮤니케이션 효율성 향상
+
+**작동 방식**:
+- 대상별 공지: 전체, 특정 반, 개별 학생 선택 배포
+- 중요도 설정: 긴급/일반/정보 레벨 구분
+- 읽음 확인: 학생별 공지 확인 상태 실시간 추적
+- 푸시 알림: 긴급 공지 즉시 전송
+- 공지 고정: 중요 공지 상단 고정 기능
+
+## 6. 학생 커뮤니티 게시판
+**기능**: 학습 자료 공유 및 경험 교류 플랫폼
+
+**중요성**: 또래 학습과 동기부여를 통한 학습 생태계 구축
+
+**작동 방식**:
+- 시험 문제 복기 게시판: 기출문제 공유 및 해설 토론
+- 합격 수기 아카이브: 선배들의 학습 노하우 축적
+- 과제 제출함: 파일 업로드 및 제출 기한 관리
+- 스터디 그룹: 자율 학습 모임 구성
+
+## 7. 교사 협업 시스템
+**기능**: 교사 간 소통과 협업을 위한 통합 워크스페이스
+
+**중요성**: 교육 품질 향상을 위한 지식 공유와 협력 강화
+
+**작동 방식**:
+- 회의록 관리: 회의 내용 기록 및 액션 아이템 추적
+- 안건 관리: 회의 안건 사전 등록 및 투표
+- 교육 자료 공유: 수업 자료 중앙 저장소
+- 일정 공유: 교사별 수업 일정 통합 캘린더
+
+## 8. 근태 관리 시스템
+**기능**: 위치 기반 자동 출퇴근 관리
+
+**중요성**: 정확한 근무 시간 추적과 급여 관리 자동화
+
+**작동 방식**:
+- GPS 기반 출근: 학원 반경 내 자동 체크인
+- QR 코드 백업: GPS 불가 시 QR 스캔
+- 근무 상태: 근무/지각/조퇴/결근 자동 분류
+- 월간 리포트: 개인별 근태 통계
+- 급여 연동: 근무 시간 기반 급여 자동 계산
+
+## 9. 게이미피케이션 시스템
+**기능**: 문제집 완료에 따른 보상 체계
+
+**중요성**: 외적 동기 부여를 통한 학습 지속성 확보
+
+**작동 방식**:
+- 문제집 완료 배지 시스템
+- 문제집별 리더보드
+- 챕터 클리어 보너스
+- 토큰 리워드 시스템
+
+## 10. 학습 분석 대시보드
+**기능**: 실시간 학습 현황 추적 및 분석 리포트
+
+**중요성**: 데이터 기반 의사결정 지원
+
+**작동 방식**:
+- 학생별/반별 학습 진도 히트맵
+- 문제별 정답률 및 취약 영역 자동 식별
+- 주간/월간 학습 리포트 자동 생성
+
+# User Experience
+
+## User Personas
+
+### 1. 학생 - 민수 (16세, 고1)
+- **목표**: 효율적인 암기로 내신 성적 향상, 학원 생활 정보 획득
+- **페인포인트**: 복습 타이밍 불확실, 중요 공지 놓침, 선배 조언 부족
+- **사용 패턴**: 모바일 중심, 하루 20-30분 학습, 쉬는 시간 게시판 확인
+- **핵심 니즈**: 명확한 학습 경로, 커뮤니티 소속감, 실시간 알림
+
+### 2. 교사 - 김선생님 (35세, 수학교사)
+- **목표**: 체계적인 문제집 관리, 학생 성과 추적, 동료 협업
+- **페인포인트**: 문제 재활용 어려움, 근태 수기 기록, 회의 내용 파편화
+- **사용 패턴**: PC로 문제집 제작, 모바일로 출퇴근 및 공지
+- **핵심 니즈**: 자동화된 관리, 협업 도구, 간편한 근태 체크
+
+### 3. 실장 - 박실장 (45세, 학원 운영)
+- **목표**: 통합 운영 관리, 교육 품질 유지, 비용 효율화
+- **페인포인트**: 근태 관리 수작업, 공지 전달 확인 어려움, 교사 협업 부족
+- **사용 패턴**: PC 위주 종합 모니터링, 모바일로 긴급 확인
+- **핵심 니즈**: 통합 대시보드, 자동 리포트, 실시간 현황 파악
+
+## Key User Flows
+
+### 학생 일일 루틴 플로우
+1. 앱 접속 → 오늘의 공지사항 팝업 확인
+2. 메인 대시보드에서 복습 카드와 새 문제집 확인
+3. 복습 세션 진행 (15-20분)
+4. 쉬는 시간: 게시판에서 선배 합격수기 읽기
+5. 과제 제출함에서 숙제 업로드
+6. 일일 학습 완료 시 토큰 획득 및 랭킹 확인
+
+### 교사 일일 업무 플로우
+1. 학원 도착 → GPS 자동 출근 체크
+2. 교사 협업 공간에서 오늘 안건 확인
+3. 문제집 관리 → 오늘 배포할 문제집 예약
+4. 수업 후: 학생 진도 대시보드 확인
+5. 공지사항 작성 및 배포
+6. 퇴근 시 자동 체크아웃
+
+### 실장 운영 관리 플로우
+1. 관리자 대시보드 접속
+2. 전체 근태 현황 확인 (지각자 체크)
+3. 공지사항 읽음 확인률 모니터링
+4. 교사 회의록 검토 및 피드백
+5. 주간 운영 리포트 생성
+6. 시스템 사용 통계 분석
+
+### 공지사항 생성 및 추적 플로우
+1. 공지 작성 → 대상 선택 (전체/반/개인)
+2. 중요도 설정 (긴급/일반/정보)
+3. 첨부파일 추가 (이미지, PDF)
+4. 예약 발송 또는 즉시 발송
+5. 실시간 읽음 현황 모니터링
+6. 미확인자 재알림 발송
+
+## UI/UX Considerations
+
+### 통합 대시보드
+- 역할별 맞춤 위젯 구성
+- 실시간 업데이트 인디케이터
+- 퀵 액션 버튼 (공지 작성, 출근 체크 등)
+
+### 공지사항 인터페이스
+- 중요도별 색상 코딩 (빨강/노랑/파랑)
+- 읽음 확인 실시간 프로그레스 바
+- 카테고리별 필터링
+- 검색 및 아카이빙
+
+### 게시판 디자인
+- 카드 기반 피드 레이아웃
+- 무한 스크롤
+- 좋아요/댓글 인터랙션
+- 이미지 갤러리 뷰
+- 해시태그 시스템
+
+### 근태 관리 UI
+- 시각적 출퇴근 버튼
+- 주간/월간 캘린더 뷰
+- 근무 시간 실시간 타이머
+- 근태 이상 알림 배지
+
+# Technical Architecture
+
+## System Components
+
+### Frontend Architecture
+```
+├── Web Application (React + TypeScript)
+│   ├── Student Portal
+│   │   ├── Problem Sets
+│   │   ├── Notice Board
+│   │   ├── Community Forum
+│   │   └── Assignment Submission
+│   ├── Teacher Dashboard
+│   │   ├── Problem Management
+│   │   ├── Notice Creator
+│   │   ├── Collaboration Space
+│   │   └── Attendance Checker
+│   └── Admin Console
+│       ├── System Monitor
+│       ├── User Management
+│       ├── Notice Analytics
+│       ├── Attendance Reports
+│       └── Meeting Manager
+├── Mobile Applications
+│   ├── iOS (React Native)
+│   └── Android (React Native)
+└── Shared Component Library
+    ├── Notice Components
+    ├── Forum Components
+    └── Attendance Components
+```
+
+### Backend Architecture
+```
+├── API Gateway (Kong/Nginx)
+├── Microservices
+│   ├── Auth Service
+│   ├── Problem Service
+│   ├── Notice Service
+│   │   ├── Notice CRUD
+│   │   ├── Target Manager
+│   │   └── Read Tracker
+│   ├── Community Service
+│   │   ├── Forum Engine
+│   │   ├── File Upload
+│   │   └── Comment System
+│   ├── Collaboration Service
+│   │   ├── Meeting Manager
+│   │   ├── Document Store
+│   │   └── Chat Engine
+│   ├── Attendance Service
+│   │   ├── GPS Validator
+│   │   ├── Check-in/out
+│   │   └── Report Generator
+│   └── Analytics Service
+├── Message Queue (RabbitMQ)
+├── Real-time Engine (Socket.io)
+├── Cache Layer (Redis)
+└── Database Cluster
+    ├── Primary DB (PostgreSQL)
+    └── Read Replicas
+```
+
+## Data Models
+
+### Extended Entities
+```sql
+-- Notices (공지사항)
+notices {
+  id: UUID
+  author_id: UUID
+  title: VARCHAR
+  content: TEXT
+  importance: ENUM(urgent, normal, info)
+  target_type: ENUM(all, class, individual)
+  target_ids: UUID[]
+  attachments: JSONB
+  is_pinned: BOOLEAN
+  expires_at: TIMESTAMP
+  created_at: TIMESTAMP
+}
+
+-- Notice Reads (공지 읽음 상태)
+notice_reads {
+  id: UUID
+  notice_id: UUID
+  user_id: UUID
+  read_at: TIMESTAMP
+  device_info: JSONB
+}
+
+-- Forum Posts (게시판)
+forum_posts {
+  id: UUID
+  author_id: UUID
+  category: ENUM(exam_review, success_story, study_group, question)
+  title: VARCHAR
+  content: TEXT
+  tags: TEXT[]
+  attachments: JSONB
+  view_count: INTEGER
+  like_count: INTEGER
+  is_pinned: BOOLEAN
+  created_at: TIMESTAMP
+}
+
+-- Forum Comments (댓글)
+forum_comments {
+  id: UUID
+  post_id: UUID
+  author_id: UUID
+  parent_id: UUID (for nested comments)
+  content: TEXT
+  created_at: TIMESTAMP
+}
+
+-- Assignments (과제)
+assignments {
+  id: UUID
+  teacher_id: UUID
+  title: VARCHAR
+  description: TEXT
+  due_date: TIMESTAMP
+  target_class_id: UUID
+  max_file_size: INTEGER
+  allowed_formats: TEXT[]
+  created_at: TIMESTAMP
+}
+
+-- Assignment Submissions (과제 제출)
+assignment_submissions {
+  id: UUID
+  assignment_id: UUID
+  student_id: UUID
+  file_urls: JSONB
+  comment: TEXT
+  submitted_at: TIMESTAMP
+  grade: DECIMAL
+  feedback: TEXT
+}
+
+-- Meetings (회의)
+meetings {
+  id: UUID
+  title: VARCHAR
+  agenda: JSONB
+  scheduled_at: TIMESTAMP
+  participants: UUID[]
+  minutes: TEXT
+  action_items: JSONB
+  created_by: UUID
+  created_at: TIMESTAMP
+}
+
+-- Attendance (근태)
+attendance_records {
+  id: UUID
+  user_id: UUID
+  date: DATE
+  check_in_time: TIME
+  check_out_time: TIME
+  check_in_location: POINT
+  check_out_location: POINT
+  status: ENUM(present, late, early_leave, absent)
+  work_hours: INTERVAL
+  overtime_hours: INTERVAL
+  notes: TEXT
+}
+
+-- Attendance Rules (근태 규칙)
+attendance_rules {
+  id: UUID
+  standard_check_in: TIME
+  late_threshold: INTEGER (minutes)
+  early_leave_threshold: INTEGER (minutes)
+  location_center: POINT
+  location_radius: INTEGER (meters)
+  qr_code: VARCHAR
+}
+```
+
+## APIs and Integrations
+
+### Extended APIs
+```yaml
+Notice API:
+  POST /api/notices (공지 생성)
+  GET /api/notices (공지 목록)
+  GET /api/notices/{id} (공지 상세)
+  PUT /api/notices/{id} (공지 수정)
+  DELETE /api/notices/{id} (공지 삭제)
+  POST /api/notices/{id}/read (읽음 처리)
+  GET /api/notices/{id}/reads (읽음 현황)
+  POST /api/notices/{id}/pin (상단 고정)
+
+Forum API:
+  POST /api/forum/posts (게시글 작성)
+  GET /api/forum/posts (게시글 목록)
+  GET /api/forum/posts/{id} (게시글 상세)
+  POST /api/forum/posts/{id}/like (좋아요)
+  POST /api/forum/posts/{id}/comments (댓글 작성)
+  GET /api/forum/search (게시글 검색)
+
+Assignment API:
+  POST /api/assignments (과제 생성)
+  GET /api/assignments (과제 목록)
+  POST /api/assignments/{id}/submit (과제 제출)
+  GET /api/assignments/{id}/submissions (제출 현황)
+  PUT /api/assignments/submissions/{id}/grade (채점)
+
+Meeting API:
+  POST /api/meetings (회의 생성)
+  GET /api/meetings (회의 목록)
+  PUT /api/meetings/{id}/minutes (회의록 작성)
+  POST /api/meetings/{id}/action-items (액션 아이템)
+
+Attendance API:
+  POST /api/attendance/check-in (출근)
+  POST /api/attendance/check-out (퇴근)
+  GET /api/attendance/status (현재 상태)
+  GET /api/attendance/report (근태 리포트)
+  POST /api/attendance/qr-validate (QR 검증)
+  GET /api/attendance/location-validate (위치 검증)
+```
+
+### External Integrations
+- **Push Notifications**: FCM (공지, 근태 알림)
+- **Location Services**: Google Maps API (GPS 검증)
+- **File Storage**: AWS S3 (과제, 첨부파일)
+- **Real-time Updates**: Socket.io (공지 읽음, 채팅)
+- **Calendar Integration**: Google Calendar (회의 일정)
+
+## Infrastructure Requirements
+
+### Real-time Requirements
+```yaml
+WebSocket Infrastructure:
+  - Socket.io 서버 클러스터
+  - Redis Pub/Sub for scaling
+  - Sticky sessions for connection persistence
+  
+Real-time Features:
+  - Notice read status updates
+  - Forum post interactions
+  - Attendance status broadcast
+  - Meeting collaboration
+```
+
+### Storage Requirements
+```yaml
+File Storage:
+  - Assignment submissions: 100GB
+  - Forum attachments: 50GB
+  - Meeting documents: 20GB
+  - Notice attachments: 10GB
+  
+Database Growth:
+  - Attendance records: 1M rows/year
+  - Forum posts: 100K rows/year
+  - Notices: 10K rows/year
+```
+
+# Development Roadmap
+
+## Phase 1: Foundation (MVP)
+- Core infrastructure setup
+- Basic problem set system
+- Simple notice system (create, read)
+- Basic attendance (manual check-in/out)
+- Student problem solving interface
+
+## Phase 2: Enhancement
+- Advanced problem types
+- Notice targeting and read tracking
+- GPS-based attendance
+- Basic forum (posts only)
+- Teacher collaboration space
+
+## Phase 3: Scale
+- Full forum features (comments, likes)
+- Assignment submission system
+- Meeting management
+- Attendance analytics
+- Mobile native apps
+
+## Phase 4: Innovation
+- AI-powered features
+- Advanced analytics
+- Video conferencing integration
+- Parent portal
+- Third-party integrations
+
+## Phase 5: Community & Operations (신규)
+
+### Community Features
+- Advanced forum with categories
+- Mentoring system
+- Study group matching
+- Peer review system
+- Knowledge base wiki
+
+### Operational Excellence
+- Complete attendance automation
+- Payroll integration
+- Advanced notice analytics
+- Meeting transcription
+- Document management system
+
+### Communication Hub
+- Internal messaging system
+- Video meeting integration
+- Announcement scheduling
+- Multi-channel notifications
+- Parent communication portal
+
+### Advanced Management
+- Teacher performance metrics
+- Resource scheduling
+- Facility management
+- Budget tracking
+- Compliance reporting
+
+# Logical Dependency Chain
+
+## Foundation Layer
+1. User authentication system
+2. Role-based permissions
+3. Database schema for all entities
+4. Basic API structure
+
+## Content Layer
+1. Problem CRUD
+2. Problem Set Builder
+3. Assignment System
+4. Notice System (basic)
+
+## Communication Layer
+1. Notice targeting system
+2. Read tracking mechanism
+3. Push notification setup
+4. Forum infrastructure
+
+## Operational Layer
+1. GPS/location services
+2. Attendance rules engine
+3. Time tracking system
+4. Report generation
+
+## Collaboration Layer
+1. Meeting scheduler
+2. Document storage
+3. Real-time updates
+4. Chat system
+
+## Analytics Layer
+1. Data aggregation
+2. Report builders
+3. Dashboard components
+4. Export functionality
+
+## Critical Path for Extended Features
+```
+Notice System → Read Tracking → Push Notifications → Forum → Attendance
+      ↓              ↓               ↓                ↓          ↓
+  기본 소통      확인 관리       실시간 알림      커뮤니티    운영 관리
+```
+
+## Parallel Tracks (Phase 5+)
+- **Track A**: Community Development (Forum, Mentoring)
+- **Track B**: Operation Automation (Attendance, Payroll)
+- **Track C**: Communication Enhancement (Chat, Video)
+- **Track D**: Management Tools (Analytics, Reports)
+
+# Risks and Mitigations
+
+## Technical Challenges
+
+### 1. 실시간 동기화 복잡도
+**리스크**: 공지 읽음 상태, 출석 상태 등 실시간 업데이트 부하
+**대응책**:
+- WebSocket 클러스터링
+- Redis Pub/Sub 활용
+- Debouncing/Throttling 적용
+- Eventual consistency 수용
+
+### 2. 위치 기반 서비스 정확도
+**리스크**: GPS 오차로 인한 출퇴근 오인식
+**대응책**:
+- Wi-Fi 기반 위치 보정
+- QR 코드 백업 시스템
+- 수동 승인 옵션
+- 위치 히스토리 학습
+
+### 3. 대용량 파일 처리
+**리스크**: 과제 제출 시 대용량 파일 업로드/다운로드
+**대응책**:
+- 청크 업로드 구현
+- CDN 활용
+- 파일 압축 자동화
+- 프로그레시브 다운로드
+
+## Operational Risks
+
+### 1. 개인정보 보호
+**리스크**: 위치 정보, 게시글 등 민감 정보 노출
+**대응책**:
+- 위치 정보 암호화
+- 게시글 필터링 시스템
+- 접근 권한 세분화
+- 정기 보안 감사
+
+### 2. 시스템 의존도 증가
+**리스크**: 전체 운영이 시스템에 의존
+**대응책**:
+- 오프라인 백업 프로세스
+- 단계적 전환 계획
+- 비상 대응 매뉴얼
+- 정기 백업 및 복구 훈련
+
+### 3. 사용자 저항
+**리스크**: 새로운 시스템 적응 어려움
+**대응책**:
+- 단계별 기능 출시
+- 충분한 교육 제공
+- 피드백 채널 운영
+- 인센티브 제도
+
+## Resource Constraints
+
+### 1. 다양한 기능 통합
+**리스크**: 기능 간 일관성 유지 어려움
+**대응책**:
+- 통합 디자인 시스템
+- 공통 컴포넌트 라이브러리
+- 일관된 API 규칙
+- 정기 코드 리뷰
+
+### 2. 운영 데이터 관리
+**리스크**: 근태, 회의록 등 증가하는 운영 데이터
+**대응책**:
+- 데이터 아카이빙 정책
+- 자동 정리 스케줄러
+- 효율적 인덱싱
+- 데이터 수명 주기 관리
+
+# Appendix
+
+## Research Findings
+
+### 학원 운영 페인포인트
+- 근태 관리 수작업: 월 평균 20시간 소요
+- 공지 미확인율: 평균 35%
+- 교사 간 정보 공유 부족: 중요 정보 누락 15%
+- 학생 커뮤니티 요구: 85% 이상이 선배 조언 희망
+
+### 벤치마크 분석
+- **ClassDojo**: 학급 관리 중심, 학원 특화 기능 부족
+- **Remind**: 공지 특화, 학습 관리 미흡
+- **차별점**: 학습 + 운영 + 커뮤니티 통합
+
+## Technical Specifications
+
+### Location Service Specs
+```yaml
+GPS Requirements:
+  - Accuracy: < 10 meters
+  - Update frequency: 30 seconds
+  - Battery optimization: Geofencing
+  - Fallback: Wi-Fi positioning
+  
+Location Validation:
+  - Center point: Academy location
+  - Valid radius: 50 meters
+  - Grace period: 5 minutes
+```
+
+### Real-time Sync Specs
+```yaml
+WebSocket Events:
+  - notice:read (공지 읽음)
+  - attendance:checkin (출근)
+  - attendance:checkout (퇴근)
+  - forum:new_post (새 게시글)
+  - forum:new_comment (새 댓글)
+  - meeting:update (회의 업데이트)
+  
+Sync Strategy:
+  - Debounce: 500ms
+  - Batch updates: 10 items
+  - Retry: 3 attempts
+  - Fallback: HTTP polling
+```
+
+### File Upload Specs
+```yaml
+Assignment Files:
+  - Max size: 100MB
+  - Allowed types: pdf, doc, ppt, img, video
+  - Chunk size: 5MB
+  - Concurrent uploads: 3
+  
+Storage Strategy:
+  - S3 multipart upload
+  - CloudFront distribution
+  - 90-day retention
+  - Automatic compression
+```
+
+### Database Optimization
+```sql
+-- Notice performance indexes
+CREATE INDEX idx_notices_target ON notices(target_type, target_ids) WHERE expires_at > NOW();
+CREATE INDEX idx_notice_reads_user ON notice_reads(user_id, notice_id);
+
+-- Forum performance indexes  
+CREATE INDEX idx_forum_posts_category ON forum_posts(category, created_at DESC);
+CREATE INDEX idx_forum_comments_post ON forum_comments(post_id, created_at);
+
+-- Attendance indexes
+CREATE INDEX idx_attendance_user_date ON attendance_records(user_id, date DESC);
+CREATE INDEX idx_attendance_status ON attendance_records(status, date) WHERE status != 'present';
+```
+
+---
+
+*Document Version: 4.0*  
+*Last Updated: 2025-01-24*  
+*Author: WOODIECAMPUS Product Team*  
+*Note: Phase 5 추가 - 공지사항, 게시판, 협업, 근태 관리 시스템*
