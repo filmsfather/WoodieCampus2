@@ -8,9 +8,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_BACKEND: woodiecampus/backend
-  IMAGE_NAME_FRONTEND: woodiecampus/frontend
-  IMAGE_NAME_NGINX: woodiecampus/nginx
+  IMAGE_NAME_BACKEND: filmsfather/woodiecampus-backend
+  IMAGE_NAME_FRONTEND: filmsfather/woodiecampus-frontend
+  IMAGE_NAME_NGINX: filmsfather/woodiecampus-nginx
 
 jobs:
   # 테스트 작업

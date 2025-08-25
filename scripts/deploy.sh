@@ -121,9 +121,9 @@ fi
 # Docker 이미지 풀
 log_info "Pulling Docker images..."
 
-docker pull "$REGISTRY/woodiecampus/backend:$IMAGE_TAG"
-docker pull "$REGISTRY/woodiecampus/frontend:$IMAGE_TAG"  
-docker pull "$REGISTRY/woodiecampus/nginx:$IMAGE_TAG"
+docker pull "$REGISTRY/filmsfather/woodiecampus-backend:$IMAGE_TAG"
+docker pull "$REGISTRY/filmsfather/woodiecampus-frontend:$IMAGE_TAG"  
+docker pull "$REGISTRY/filmsfather/woodiecampus-nginx:$IMAGE_TAG"
 
 log_success "Images pulled successfully"
 
@@ -208,9 +208,9 @@ log_success "Deployment completed successfully!"
 log_info "Deployment Summary:"
 log_info "  Environment: $ENVIRONMENT"
 log_info "  Image Tag: $IMAGE_TAG"
-log_info "  Backend: $REGISTRY/woodiecampus/backend:$IMAGE_TAG"
-log_info "  Frontend: $REGISTRY/woodiecampus/frontend:$IMAGE_TAG"
-log_info "  Nginx: $REGISTRY/woodiecampus/nginx:$IMAGE_TAG"
+log_info "  Backend: $REGISTRY/filmsfather/woodiecampus-backend:$IMAGE_TAG"
+log_info "  Frontend: $REGISTRY/filmsfather/woodiecampus-frontend:$IMAGE_TAG"
+log_info "  Nginx: $REGISTRY/filmsfather/woodiecampus-nginx:$IMAGE_TAG"
 
 # Slack 알림 (환경변수가 설정된 경우)
 if [ -n "$SLACK_WEBHOOK_URL" ]; then

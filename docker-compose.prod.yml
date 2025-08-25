@@ -54,7 +54,7 @@ services:
 
   # Backend API Server
   backend:
-    image: ${REGISTRY:-ghcr.io}/woodiecampus/backend:${IMAGE_TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/filmsfather/woodiecampus-backend:${IMAGE_TAG:-latest}
     container_name: woodiecampus-backend
     environment:
       NODE_ENV: production
@@ -99,7 +99,7 @@ services:
 
   # Frontend React App
   frontend:
-    image: ${REGISTRY:-ghcr.io}/woodiecampus/frontend:${IMAGE_TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/filmsfather/woodiecampus-frontend:${IMAGE_TAG:-latest}
     container_name: woodiecampus-frontend
     networks:
       - woodiecampus-network
@@ -117,7 +117,7 @@ services:
 
   # API Gateway (Nginx)
   gateway:
-    image: ${REGISTRY:-ghcr.io}/woodiecampus/nginx:${IMAGE_TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/filmsfather/woodiecampus-nginx:${IMAGE_TAG:-latest}
     container_name: woodiecampus-gateway
     ports:
       - "80:80"
