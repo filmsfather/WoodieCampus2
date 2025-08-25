@@ -41,6 +41,9 @@ RUN npm ci --only=production && npm cache clean --force
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
+# Copy Prisma schema for migrations
+COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
+
 # Copy environment files
 COPY --chown=nodejs:nodejs .env.example ./
 
