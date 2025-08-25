@@ -1,5 +1,10 @@
 # WoodieCampus
 
+Educational platform with real-time communication features.
+
+![CI/CD Pipeline](https://github.com/filmsfather/WoodieCampus2/workflows/CI/CD%20Pipeline/badge.svg)
+![License](https://img.shields.io/github/license/filmsfather/WoodieCampus2)
+
 Full-stack educational platform built with React + TypeScript frontend and Node.js + PostgreSQL backend.
 
 ## 🚀 Quick Start
